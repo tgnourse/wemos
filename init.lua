@@ -7,12 +7,12 @@ function startup()
     else
         file.close("init.lua")
         -- the actual application is stored in 'application.lua'
-        local file, err = loadfile("application.lua")
+        local file, err = loadfile(APPLICATION)
         if file then
-            print("Running 'application.lua")
+            print("Running " .. APPLICATION)
             file()
         else
-            print("There was an error opening 'application.lua'")
+            print("There was an error opening " .. APPLICATION)
             print(err)
         end
     end
