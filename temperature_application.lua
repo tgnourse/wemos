@@ -71,7 +71,10 @@ function dweet()
 end
 
 -- dweets every 60 sec.
-tmr.alarm(0, 60 * 1000, 1, function() dweet() end )
+if tmr.alarm(0, 60 * 1000, tmr.ALARM_AUTO, function() dweet() end ) then
+    print("Dweets every 60 sec to dweet.io")
+    print("Stop this by tmr.stop(0)")
+else
+    print("Problem starting timer!")
+end
 
-print("Dweets every 60 sec to dweet.io")
-print("Stop this by tmr.stop(0)")
