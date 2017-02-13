@@ -2,7 +2,6 @@
 luac.out
 
 # Files that contain sensitive information
-credentials.lua
 configuration.lua
 
 # luarocks build files
