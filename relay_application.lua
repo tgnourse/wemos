@@ -2,6 +2,7 @@
 local PIN = 1
 local status = false
 gpio.mode(PIN, gpio.OUTPUT)
+local TIMER_ID = 0
 
 function on()
     print("Turning relay on ...")
@@ -29,6 +30,22 @@ function onView()
     return ""
 end
 
+-- TODO(tgnourse): This seems to crap out and stop turning off after it's left for a "while".
+function onFiveView()
+    on()
+    -- Set a time that'll turn the relay off in 5 seconds
+    print("Scheduled to turn off in 5 seconds ...")
+    if tmr.state(TIMER_ID) then
+        print("tmr.stop() result: " .. tostring(tmr.stop(TIMER_ID)))
+        tmr.interval(TIMER_ID, 5 * 1000)
+        print("tmr.start() result: " .. tostring(tmr.start(TIMER_ID)))
+    else
+        tmr.register(TIMER_ID, 5 * 1000, tmr.ALARM_SINGLE, function() off() end )
+        print("tmr.start() result: " .. tostring(tmr.start(TIMER_ID)))
+    end
+    return ""
+end
+
 function offView()
     off()
     return ""
@@ -46,11 +63,14 @@ function defaultView()
             "<h2>Status: " .. statusHTML(status) .. "</h2>" ..
             "<ul>" ..
                 "<li><a href=\"/on\">Turn on</a></li>" ..
+                "<li><a href=\"/on5\">Turn on for 5 seconds</a></li>" ..
                 "<li><a href=\"/off\">Turn off</a></li>" ..
             "</ul>"
 
 end
 
+-- Start an HTTP server for controlling the relay
+print("Starting relay server ...")
 srv=net.createServer(net.TCP)
 srv:listen(80,function(conn)
     conn:on("receive",function(conn, payload)
@@ -60,10 +80,12 @@ srv:listen(80,function(conn)
             body = onView() .. defaultView()
         elseif url == "/off" then
             body = offView() .. defaultView()
+        elseif url == "/on5" then
+            body = onFiveView() .. defaultView()
         else
             body = defaultView()
         end
         conn:send("<html><body>" .. body .. "</body></html>")
-        conn:close()
     end)
+    conn:on("sent",function(conn) conn:close() end)
 end)
