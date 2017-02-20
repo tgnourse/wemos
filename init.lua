@@ -22,20 +22,20 @@ if WIFI then
     wifi.setmode(wifi.STATION)
     wifi.sta.config(SSID, PASSWORD)
     -- wifi.sta.connect() not necessary because config() uses auto-connect=true by default
-    tmr.alarm(1, 1000, 1, function()
+    tmr.alarm(1, 500, 1, function()
         if wifi.sta.getip() == nil then
             print("Waiting for IP address in WiFi mode: " .. wifi.getmode())
         else
             tmr.stop(1)
             print("WiFi connection established, IP address: " .. wifi.sta.getip())
-            print("You have 5 seconds to abort")
+            print("You have " .. STARTUP_DELAY .. " seconds to abort")
             print("Waiting...")
-            tmr.alarm(0, 5000, 0, startup)
+            tmr.alarm(0, STARTUP_DELAY * 1000, 0, startup)
         end
     end)
 else
     -- No WiFi startup
-    print("You have 5 seconds to abort")
+    print("You have " .. STARTUP_DELAY .. " seconds to abort")
     print("Waiting...")
-    tmr.alarm(0, 5000, 0, startup)
+    tmr.alarm(0, STARTUP_DELAY * 1000, 0, startup)
 end

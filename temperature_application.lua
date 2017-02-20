@@ -1,4 +1,4 @@
--- load configuration, 'THING', 'TEMPERATURE_DIFF', 'HUMIDITY_DIFF'
+-- load configuration, 'THING', 'TEMPERATURE_DIFF', 'HUMIDITY_DIFF', 'DWEET_FREQUENCY'
 dofile("configuration.lua")
 
 function dweet()
@@ -70,9 +70,9 @@ function dweet()
     end
 end
 
--- dweets every 60 sec.
-if tmr.alarm(0, 60 * 1000, tmr.ALARM_AUTO, function() dweet() end ) then
-    print("Dweets every 60 sec to dweet.io")
+-- dweets every DWEET_FREQUENCY seconds.
+if tmr.alarm(0, DWEET_FREQUENCY * 1000, tmr.ALARM_AUTO, function() dweet() end ) then
+    print("Dweets every " .. DWEET_FREQUENCY .. " sec to dweet.io")
     print("Stop this by tmr.stop(0)")
 else
     print("Problem starting timer!")

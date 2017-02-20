@@ -3,6 +3,7 @@ local PIN = 1
 local status = false
 gpio.mode(PIN, gpio.OUTPUT)
 local TIMER_ID = 0
+local DWEET_TIMER_ID = 1
 
 function on()
     print("Turning relay on ...")
@@ -69,7 +70,7 @@ function defaultView()
 
 end
 
--- Start an HTTP server for controlling the relay
+-- Start an HTTP server for controlling the relay.
 print("Starting relay server ...")
 srv=net.createServer(net.TCP)
 srv:listen(80,function(conn)
@@ -89,3 +90,33 @@ srv:listen(80,function(conn)
     end)
     conn:on("sent",function(conn) conn:close() end)
 end)
+
+
+function callDweet()
+    print("Dweeting ...")
+
+    local HOST = "dweet.io"
+    local conn = net.createConnection(net.TCP, 0)
+    conn:on("receive", function(conn, pl) print("response: ",pl) end)
+    conn:on("connection", function(conn, payload)
+        print("connected")
+        conn:send("POST /dweet/for/" .. THING
+                .. "?"
+                .. "&on=" .. tostring(status)
+                .. "&heap=" .. node.heap()
+                .. " HTTP/1.1\r\n"
+                .. "Host: " .. HOST .. "\r\n"
+                .. "Connection: close\r\n"
+                .. "Accept: */*\r\n\r\n") end)
+    conn:on("disconnection", function(conn, payload)
+        print("disconnected") end)
+    conn:connect(80, HOST)
+end
+
+-- dweets every DWEET_FREQUENCY seconds.
+if tmr.alarm(DWEET_TIMER_ID, DWEET_FREQUENCY * 1000, tmr.ALARM_AUTO, function() callDweet() end ) then
+    print("Dweets every " .. DWEET_FREQUENCY .. " seconds to dweet.io as " .. THING)
+    print("Stop this by tmr.stop(1)")
+else
+    print("Problem starting DWEET timer!")
+end
