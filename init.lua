@@ -18,7 +18,7 @@ function startup()
 end
 
 if WIFI then
-    print("Connecting to WiFi access point...")
+    print("Connecting to WiFi with SSID: " .. SSID)
     wifi.setmode(wifi.STATION)
     wifi.sta.config(SSID, PASSWORD)
     -- wifi.sta.connect() not necessary because config() uses auto-connect=true by default
