@@ -13,6 +13,8 @@ function callDweet()
                 .. "?"
                 .. "&on=1"
                 .. "&heap=" .. node.heap()
+                .. "&ip=" .. wifi.sta.getip()
+                .. "&ssid=" .. SSID
                 .. " HTTP/1.1\r\n"
                 .. "Host: " .. HOST .. "\r\n"
                 .. "Connection: close\r\n"
