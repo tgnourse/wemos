@@ -1,3 +1,4 @@
+-- load configuration, 'THING', 'DWEET_FREQUENCY'
 
 local PIN = 1
 local status = false
@@ -17,21 +18,11 @@ function off()
     gpio.write(PIN, gpio.LOW)
 end
 
-function parseUrl(payload)
-    local e = payload:find("\r\n", 1, true)
-    if not e then return nil end
-    local line = payload:sub(1, e - 1)
-    local r = {}
-    _, i, r.method, r.request = line:find("^([A-Z]+) (.-) HTTP/[1-9]+.[0-9]+$")
-    return r.request
-end
-
 function onView()
     on()
     return ""
 end
 
--- TODO(tgnourse): This seems to crap out and stop turning off after it's left for a "while".
 function onFiveView()
     on()
     -- Set a time that'll turn the relay off in 5 seconds
@@ -70,28 +61,19 @@ function defaultView()
 
 end
 
--- Start an HTTP server for controlling the relay.
-print("Starting relay server ...")
-srv=net.createServer(net.TCP)
-srv:listen(80,function(conn)
-    conn:on("receive",function(conn, payload)
-        local url = parseUrl(payload)
-        local body = ""
-        if url == "/on" then
-            body = onView() .. defaultView()
-        elseif url == "/off" then
-            body = offView() .. defaultView()
-        elseif url == "/on5" then
-            body = onFiveView() .. defaultView()
-        else
-            body = defaultView()
-        end
-        conn:send("<html><body>" .. body .. "</body></html>")
-    end)
-    conn:on("sent",function(conn) conn:close() end)
-end)
+dofile("webserver_lib.lua")
 
+routes = {
+    ["/on"] = function () return onView() .. defaultView() end,
+    ["/off"] = function () return offView() .. defaultView() end,
+    ["/on5"] = function () return onFiveView() .. defaultView() end,
+    ["/"] = function () return defaultView() end,
+}
 
+-- Start the web server.
+setUpWebServer(routes)
+
+-- TODO: Pull this out into it's own lib file and reuse.
 function callDweet()
     print("Dweeting ...")
 
@@ -115,10 +97,13 @@ function callDweet()
     conn:connect(80, HOST)
 end
 
--- dweets every DWEET_FREQUENCY seconds.
-if tmr.alarm(DWEET_TIMER_ID, DWEET_FREQUENCY * 1000, tmr.ALARM_AUTO, function() callDweet() end ) then
-    print("Dweets every " .. DWEET_FREQUENCY .. " seconds to dweet.io as " .. THING)
-    print("Stop this by tmr.stop(1)")
-else
-    print("Problem starting DWEET timer!")
+-- Only try to dweet if we're connected to the internet (i.e. a WiFi station).
+if WIFI_STATION then
+    -- dweets every DWEET_FREQUENCY seconds.
+    if tmr.alarm(DWEET_TIMER_ID, DWEET_FREQUENCY * 1000, tmr.ALARM_AUTO, function() callDweet() end ) then
+        print("Dweets every " .. DWEET_FREQUENCY .. " seconds to dweet.io as " .. THING)
+        print("Stop this by tmr.stop(1)")
+    else
+        print("Problem starting DWEET timer!")
+    end
 end
