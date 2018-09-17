@@ -1,5 +1,6 @@
 -- load configuration, 'THING', 'TEMPERATURE_DIFF', 'HUMIDITY_DIFF'
 
+-- TODO: Create a dweet_lib.lua and separate temperature code from Dweet code.
 function dweet(callback)
     print("Connecting to sensor ...")
 

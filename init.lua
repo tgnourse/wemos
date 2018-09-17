@@ -21,7 +21,12 @@ end
 if WIFI_STATION then
     print("Connecting to WiFi with SSID: " .. SSID)
     wifi.setmode(wifi.STATION)
-    wifi.sta.config(SSID, PASSWORD)
+    local cfg = {
+        ssid = SSID,
+        pwd = PASSWORD,
+        save = false
+    }
+    wifi.sta.config(cfg)
     -- wifi.sta.connect() not necessary because config() uses auto-connect=true by default
     tmr.alarm(1, 500, 1, function()
         if wifi.sta.getip() == nil then
@@ -29,8 +34,7 @@ if WIFI_STATION then
         else
             tmr.stop(1)
             print("WiFi connection established, IP address: " .. wifi.sta.getip())
-            print("You have " .. STARTUP_DELAY .. " seconds to abort")
-            print("Waiting...")
+            print("You have " .. STARTUP_DELAY .. " seconds to abort with tmr.stop(0)")
             tmr.alarm(0, STARTUP_DELAY * 1000, 0, startup)
         end
     end)
@@ -73,7 +77,7 @@ elseif WIFI_ACCESS_POINT then
     startup()
 else
     -- No WiFi startup
-    print("You have " .. STARTUP_DELAY .. " seconds to abort")
+    print("You have " .. STARTUP_DELAY .. " seconds to abort with tmr.stop(0)")
     print("Waiting...")
     tmr.alarm(0, STARTUP_DELAY * 1000, 0, startup)
 end
