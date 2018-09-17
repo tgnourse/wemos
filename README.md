@@ -1,4 +1,4 @@
-#Summary
+# Summary
 A collection of applications for the Wemos D1 Mini running NodeMcu. Note that this isn't super user friendly yet but it should be possible to get this running on your own.
 
 ## Applications
