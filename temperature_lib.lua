@@ -1,6 +1,6 @@
--- load configuration, 'THING', 'TEMPERATURE_DIFF', 'HUMIDITY_DIFF'
+-- load configuration, 'SSID', 'HOST', 'URL', 'THING', 'TEMPERATURE_DIFF', 'HUMIDITY_DIFF'
 
--- TODO: Create a dweet_lib.lua and separate temperature code from Dweet code.
+-- TODO: Create a iotupload_lib.lua and separate temperature code from the IoT upload code.
 function dweet(callback)
     print("Connecting to sensor ...")
 
@@ -22,7 +22,6 @@ function dweet(callback)
     end
     local wrote = i2c.write(ID, 0x2C, 0x06)
     i2c.stop(ID)
-    print(wrote)
 
     i2c.start(ID)
     if i2c.address(ID, ADDRESS, i2c.RECEIVER) then
@@ -34,35 +33,43 @@ function dweet(callback)
     i2c.stop(ID)
 
     if result then
-        print(string.byte(result, 1))
-        print(string.byte(result, 2))
-        print(string.byte(result, 3))
-        print(string.byte(result, 4))
-        print(string.byte(result, 5))
-        print(string.byte(result, 6))
-
         local cTemp = ((((string.byte(result, 1) * 256.0) + string.byte(result, 2)) * 175) / 65535.0) - 45;
         local fTemp = (cTemp * 1.8) + 32;
         print(fTemp)
         local humidity = ((((string.byte(result, 4) * 256.0) + string.byte(result, 5)) * 100) / 65535.0);
         print(humidity)
+        local heap = node.heap()
+        print(heap)
+        local ip = wifi.sta.getip()
+        print(ip)
+        local ssid = SSID
+        print (ssid)
 
-        print("Dweeting ...")
-        local HOST = "dweet.io"
-        local conn = net.createConnection(net.TCP,0)
+        -- local HOST = "dweet.io"
+        -- conn:send("POST /dweet/for/" .. THING
+        local http_request = "POST " .. URL
+                .. "?"
+                .. "sensor_id=" .. THING
+                .. "&temperature=" .. (fTemp + TEMPERATURE_DIFF)
+                .. "&hum=" .. (humidity + HUMIDITY_DIFF)
+                .. "&heap=" .. heap
+                .. "&ip=" .. ip
+                .. "&ssid=" .. ssid
+                .. " HTTP/1.1\r\n"
+                .. "Host: " .. HOST .. "\r\n"
+                .. "Content-Length: 0\r\n"
+                .. "Connection: close\r\n"
+                .. "Accept: */*\r\n\r\n"
+        print("HTTP Request: ")
+        print(http_request)
+
+        print("Setting up connection ...")
+
+        local conn = net.createConnection(net.TCP, 0)
         conn:on("connection", function(conn, payload)
-            print("sending ...")
-            conn:send("POST /dweet/for/" .. THING
-                    .. "?"
-                    .. "temperature=" .. (fTemp + TEMPERATURE_DIFF)
-                    .. "&hum=" .. (humidity + HUMIDITY_DIFF)
-                    .. "&heap=" .. node.heap()
-                    .. "&ip=" .. wifi.sta.getip()
-                    .. "&ssid=" .. SSID
-                    .. " HTTP/1.1\r\n"
-                    .. "Host: " .. HOST .. "\r\n"
-                    .. "Connection: close\r\n"
-                    .. "Accept: */*\r\n\r\n")
+            print("Sending ...")
+
+            conn:send(http_request)
         end)
         conn:on("receive", function(conn, pl)
             print("response: ", pl)
@@ -73,7 +80,7 @@ function dweet(callback)
         end)
         conn:connect(80, HOST)
     else
-        print "No result received from the senseor, giving up!"
+        print "No result received from the sensor, giving up!"
         -- If we can't read from the sensor, call the callback
         if callback then
             callback()

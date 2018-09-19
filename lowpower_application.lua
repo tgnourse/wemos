@@ -2,9 +2,9 @@
 dofile("configuration.lua")
 dofile("temperature_lib.lua")
 
--- Add a watch dog that restarts in 5 seconds in case the network call gets
--- stuck, which appears to happen every now and again.
-tmr.softwd(5)
+-- Add a watch dog that restarts in 20 seconds in case the network call gets stuck, which appears to
+-- happen every now and again.
+tmr.softwd(20)
 dweet(function ()
     tmr.softwd(-1)
     print("Going to sleep for " .. DWEET_FREQUENCY .. " seconds.")
