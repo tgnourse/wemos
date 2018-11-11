@@ -5,8 +5,8 @@ A collection of applications for the Wemos D1 Mini running NodeMcu. Note that th
 * `current_applicatiion.lua` - Unifinished, attempting to read and report A/C current measurements.
 * `lowpower_application.lua` - Low power temperature reporting. Nicer than normal temperature reporting because it doesn't require any insulation between the SHT20 and the Wemos board.
 * `on_application.lua` - Calls a specified endpoint at a regular interval. Pairs well with the `/on5` endpoint of the `relay_application.lua`.
-* `replay_application.lua` - Exposes a web server for control of a relay with endpoints like `/on`, `/off`, and `/on5`.
-* `temperature_applicatio.lua` - Temperature reporting. Requires inslutation between the Wemos D1miniPRo and the SHT30 because the former heats up the latter since it doesn't go to sleep.
+* `relay_application.lua` - Exposes a web server for control of a relay with endpoints like `/on`, `/off`, and `/on5`.
+* `temperature_application.lua` - Temperature reporting. Requires inslutation between the Wemos D1miniPRo and the SHT30 because the former heats up the latter since it doesn't go to sleep.
 
 ## How To
 
@@ -70,4 +70,4 @@ DWEET_FREQUENCY = 300 -- seconds
 ```
 
 ### Upload
-Either upload files one by one or use the script `./upload.sh`
+Either upload files one by one or use the script `./upload.sh`. If you're having trouble uploading a file due to timeouts or whatever, it helps to remove the `init.lua`.
