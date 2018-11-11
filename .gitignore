@@ -4,6 +4,10 @@ luac.out
 # Files that contain sensitive information
 configuration.lua
 
+# Tools
+esptool/
+nodemcu-uploader/
+
 # luarocks build files
 *.src.rock
 *.zip

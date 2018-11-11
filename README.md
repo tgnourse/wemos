@@ -9,6 +9,46 @@ A collection of applications for the Wemos D1 Mini running NodeMcu. Note that th
 * `temperature_applicatio.lua` - Temperature reporting. Requires inslutation between the Wemos D1miniPRo and the SHT30 because the former heats up the latter since it doesn't go to sleep.
 
 ## How To
+
+### Install the Tools
+Install esptool (flasher) & nodemcu-uploader (file upload, etc.), and `pip install wrapt`
+```
+> ./install.sh 
+  Cloning into 'esptool'...
+  ...
+  Resolving deltas: 100% (1069/1069), done.
+  Cloning into 'nodemcu-uploader'...
+  ...
+  Resolving deltas: 100% (428/428), done.
+  ...
+  Successfully installed wrapt-1.10.11
+```
+
+### Flash
+Only needs to happen once, make sure to pick the right chip. May need to change the serial port in `flash.sh` or just run the command yourself. See the [NodeMCU Docs](https://nodemcu.readthedocs.io/en/master/en/flash/#esptool) for more.
+```
+> ./flash-ESP8266.sh
+  ...
+  Hash of data verified.
+  
+  Leaving...
+  Hard resetting via RTS pin...
+```
+
+### Serial Monitor
+You should see this after resetting the Wemos and it's formatting.
+```
+> python nodemcu-uploader/nodemcu-uploader.py --port /dev/tty.wchusbserial14140 terminal
+  ...
+  Formatting file system. Please wait...
+```
+
+And after it's done (and you're ready to go) you should finally see. If you try to do anything before this it won't work.
+```
+  lua: cannot open init.lua
+```
+
+### Configuration
 Needs a `configuration.lua` defined with the various variables needed by each of the applications. This can look something like this:
 ```
 -- init.lua
@@ -28,3 +68,6 @@ HUMIDITY_DIFF = 0 -- RH %
 THING = "your_thing_id"
 DWEET_FREQUENCY = 300 -- seconds
 ```
+
+### Upload
+Either upload files one by one or use one of the scripts like `./upload_lowpower.sh`
