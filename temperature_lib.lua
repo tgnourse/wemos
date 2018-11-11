@@ -1,43 +1,56 @@
 -- load configuration, 'SSID', 'HOST', 'URL', 'THING', 'TEMPERATURE_DIFF', 'HUMIDITY_DIFF'
 
--- TODO: Create a iotupload_lib.lua and separate temperature code from the IoT upload code.
-function dweet(callback)
-    print("Connecting to sensor ...")
-
-    -- ID is always 0
+function sht30()
+    -- ID is always 0, doesn't matter the device.
     local ID = 0
     -- Defined by the SHT30 shield, 0x45
-    local ADDRESS = 69
+    local SHT30_ADDRESS = 69
     -- Defined by the SHT30 shield
-    local SC1 = 1
     local SDA = 2
+    local SCL = 1
 
-    i2c.setup(ID, SDA, SC1, i2c.SLOW)
+    i2c.setup(ID, SDA, SCL, i2c.SLOW)
 
     i2c.start(ID)
-    if i2c.address(ID, ADDRESS, i2c.TRANSMITTER) then
-        print "ACK received"
-    else
-        print "No ACK received"
-    end
-    local wrote = i2c.write(ID, 0x2C, 0x06)
+    i2c.address(ID, SHT30_ADDRESS, i2c.TRANSMITTER)
+    i2c.write(ID, 0x2C, 0x06)
     i2c.stop(ID)
 
     i2c.start(ID)
-    if i2c.address(ID, ADDRESS, i2c.RECEIVER) then
-        print "ACK received"
-    else
-        print "No ACK received"
-    end
+    i2c.address(ID, SHT30_ADDRESS, i2c.RECEIVER)
     local result = i2c.read(ID, 6)
     i2c.stop(ID)
 
     if result then
-        local cTemp = ((((string.byte(result, 1) * 256.0) + string.byte(result, 2)) * 175) / 65535.0) - 45;
-        local fTemp = (cTemp * 1.8) + 32;
-        print(fTemp)
-        local humidity = ((((string.byte(result, 4) * 256.0) + string.byte(result, 5)) * 100) / 65535.0);
-        print(humidity)
+        local cTemp = ((((string.byte(result, 1) * 256.0) + string.byte(result, 2)) * 175) / 65535.0) - 45
+        local fTemp = (cTemp * 1.8) + 32
+        local humidity = ((((string.byte(result, 4) * 256.0) + string.byte(result, 5)) * 100) / 65535.0)
+        return cTemp, fTemp, humidity
+    end
+
+    return nil, nil, nil
+end
+
+function bmp180()
+    local OSS = 1 -- oversampling setting (0-3)
+    local SDA_PIN = 2 -- sda pin, GPIO2
+    local SCL_PIN = 1 -- scl pin, GPIO15
+
+    bmp180 = require("bmp180")
+    bmp180.init(SDA_PIN, SCL_PIN)
+    bmp180.read(OSS)
+    local t = bmp180.getTemperature()
+    local p = bmp180.getPressure()
+    -- release module
+    bmp180 = nil
+    package.loaded["bmp180"]=nil
+    return t, (t * 1.8) + 32, p
+end
+
+function dweet(callback)
+    local cTemp, fTemp, humidity = sht30()
+    local pcTemp, pfTemp, pressure = bmp180()
+    if cTemp then
         local heap = node.heap()
         print(heap)
         local ip = wifi.sta.getip()
@@ -45,6 +58,7 @@ function dweet(callback)
         local ssid = SSID
         print (ssid)
 
+        -- TODO: Create a iotupload_lib.lua and separate temperature code from the IoT upload code.
         -- local HOST = "dweet.io"
         -- conn:send("POST /dweet/for/" .. THING
         local http_request = "POST " .. URL

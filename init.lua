@@ -48,32 +48,6 @@ elseif WIFI_ACCESS_POINT then
     }
     wifi.ap.config(cfg, false)
     print("Access point mac: ", wifi.ap.getmac())
-
-    -- TODO: These don't work for some reason, firmware issue? Not necessary but would be nice.
---    wifi.ap.on("sta_connected", function(ev, info)
---        print("sta_connected")
---        print("sta_connected mac: ", info.mac, "id: ", info.id)
---    end)
---
---    wifi.ap.on("sta_disconnected", function(ev, info)
---        print("sta_disconnected")
---        print("sta_disconnected mac: ", info.mac, "id: ", info.id)
---    end)
---
---    wifi.ap.on("probe_req", function(ev, info)
---        print("probe_req")
---        print("probe_req from: ", info.from, "rssi: ", info.rssi)
---    end)
---
---    wifi.ap.on("start", function(ev, info)
---        print("start")
---        print("access point mac: ", wifi.ap.getmac())
---    end)
---
---    wifi.ap.on("stop", function(ev, info)
---        print("stop")
---        print("access point mac: ", wifi.ap.getmac())
---    end)
     startup()
 else
     -- No WiFi startup

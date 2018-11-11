@@ -98,7 +98,8 @@ local function read_temp()
     local X1 = (UT - AC6) * AC5 / 32768
     local X2 = MC * 2048 / (X1 + MD)
     B5 = X1 + X2
-    t = (B5 + 8) / 16
+    -- NOTE(tgnourse): Divided by 10 here ...
+    t = ((B5 + 8) / 16) / 10
     return(t)
 end
 

@@ -1,0 +1,15 @@
+-- Run like dofile("sensors.lua")
+dofile("temperature_lib.lua")
+
+print ("BMP180")
+local pcTemp, pfTemp, pressure = bmp180()
+print("Temperature: "..pcTemp.." deg C")
+print("Temperature: "..pfTemp.." deg F")
+print("Pressure: "..pressure.." Pa")
+print("Pressure: "..(pressure / 3386.389).." inHg")
+
+print ("SHT30")
+local cTemp, fTemp, humidity = sht30()
+print("Temperature: "..cTemp.." deg C")
+print("Temperature: "..fTemp.." deg C")
+print("Humidity: "..humidity.." %")
