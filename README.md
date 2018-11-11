@@ -70,4 +70,4 @@ DWEET_FREQUENCY = 300 -- seconds
 ```
 
 ### Upload
-Either upload files one by one or use one of the scripts like `./upload_lowpower.sh`
+Either upload files one by one or use the script `./upload.sh`
