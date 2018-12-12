@@ -1,4 +1,4 @@
--- load configuration, 'SSID', 'HOST', 'URL', 'THING', 'TEMPERATURE_DIFF', 'HUMIDITY_DIFF'
+-- load configuration, 'SSID', 'HOST', 'URL', 'THING'
 
 function sht30()
     -- ID is always 0, doesn't matter the device.
@@ -51,6 +51,8 @@ function dweet(callback)
     local cTemp, fTemp, humidity = sht30()
     local pcTemp, pfTemp, pressure = bmp180()
     if cTemp then
+
+        -- Get the various WiFi information.
         local heap = node.heap()
         print(heap)
         local ip = wifi.sta.getip()
@@ -64,11 +66,13 @@ function dweet(callback)
         local http_request = "POST " .. URL
                 .. "?"
                 .. "sensor_id=" .. THING
-                .. "&temperature=" .. (fTemp + TEMPERATURE_DIFF)
-                .. "&hum=" .. (humidity + HUMIDITY_DIFF)
+                .. "&temperature=" .. fTemp
+                .. "&hum=" .. humidity
                 .. "&heap=" .. heap
                 .. "&ip=" .. ip
                 .. "&ssid=" .. ssid
+                .. "&pressure_temperature=" .. pfTemp
+                .. "&pressure=" .. pressure / 3386.389 -- convert pa to inHg
                 .. " HTTP/1.1\r\n"
                 .. "Host: " .. HOST .. "\r\n"
                 .. "Content-Length: 0\r\n"

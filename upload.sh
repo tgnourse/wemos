@@ -8,8 +8,8 @@ declare -a arr=(
     "bmp180.lua"
     "temperature_lib.lua"
     "lowpower_application.lua"
-#    "configuration.lua"
-#    "init.lua"
+    "configuration.lua"
+    "init.lua"
 )
 
 for i in "${arr[@]}"

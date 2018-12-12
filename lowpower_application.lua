@@ -1,4 +1,4 @@
--- load configuration, 'DWEET_FREQUENCY'
+-- load configuration, 'FREQUENCY'
 dofile("configuration.lua")
 dofile("temperature_lib.lua")
 
@@ -7,6 +7,6 @@ dofile("temperature_lib.lua")
 tmr.softwd(20)
 dweet(function ()
     tmr.softwd(-1)
-    print("Going to sleep for " .. DWEET_FREQUENCY .. " seconds.")
-    node.dsleep(DWEET_FREQUENCY * 1000 * 1000, nil, nil)
+    print("Going to sleep for " .. FREQUENCY .. " seconds.")
+    node.dsleep(FREQUENCY * 1000 * 1000, nil, nil)
 end)

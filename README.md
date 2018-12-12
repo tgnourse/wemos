@@ -66,7 +66,7 @@ STARTUP_DELAY = 5 -- seconds
 TEMPERATURE_DIFF = 0 -- degrees F
 HUMIDITY_DIFF = 0 -- RH %
 THING = "your_thing_id"
-DWEET_FREQUENCY = 300 -- seconds
+FREQUENCY = 300 -- seconds
 ```
 
 ### Upload

@@ -1,4 +1,4 @@
--- load configuration, 'THING', 'DWEET_FREQUENCY', 'URL_HOST', 'URL_PATH', 'URL_FREQUENCY'
+-- load configuration, 'THING', 'FREQUENCY', 'URL_HOST', 'URL_PATH', 'URL_FREQUENCY'
 dofile("configuration.lua")
 
 function callDweet()
@@ -43,7 +43,7 @@ end
 
 -- Start with the frequency values so the first beat triggers the functions.
 local urlBeatCount = URL_FREQUENCY
-local dweetBeatCount = DWEET_FREQUENCY
+local dweetBeatCount = FREQUENCY
 
 function beat()
     if urlBeatCount >= URL_FREQUENCY then
@@ -52,7 +52,7 @@ function beat()
     end
     urlBeatCount = urlBeatCount + 1
 
-    if dweetBeatCount >= DWEET_FREQUENCY then
+    if dweetBeatCount >= FREQUENCY then
         callDweet()
         dweetBeatCount = 0
     end
@@ -64,7 +64,7 @@ beat()
 
 -- Now set up the hearbeat alarm.
 if tmr.alarm(0, 1000, tmr.ALARM_AUTO, function() beat() end ) then
-    print("Dweets every " .. DWEET_FREQUENCY .. " seconds to dweet.io as " .. THING)
+    print("Dweets every " .. FREQUENCY .. " seconds to dweet.io as " .. THING)
     print("Request every " .. URL_FREQUENCY .. " seconds to " .. URL_HOST .. "/" .. URL_PATH)
     print("Hearbeat timer every 1 second")
     print("Stop this by tmr.stop(0)")
@@ -72,8 +72,8 @@ else
     print("Problem starting hearbeat timer!")
 end
 
--- dweets every DWEET_FREQUENCY seconds.
---if tmr.alarm(0, DWEET_FREQUENCY * 1000, tmr.ALARM_AUTO, function() callDweet() end ) then
+-- dweets every FREQUENCY seconds.
+--if tmr.alarm(0, FREQUENCY * 1000, tmr.ALARM_AUTO, function() callDweet() end ) then
 
 --    print("Stop this by tmr.stop(0)")
 --else

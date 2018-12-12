@@ -1,4 +1,4 @@
--- load configuration, 'THING', 'DWEET_FREQUENCY'
+-- load configuration, 'THING', 'FREQUENCY'
 
 local PIN = 1
 local status = false
@@ -99,9 +99,9 @@ end
 
 -- Only try to dweet if we're connected to the internet (i.e. a WiFi station).
 if WIFI_STATION then
-    -- dweets every DWEET_FREQUENCY seconds.
-    if tmr.alarm(DWEET_TIMER_ID, DWEET_FREQUENCY * 1000, tmr.ALARM_AUTO, function() callDweet() end ) then
-        print("Dweets every " .. DWEET_FREQUENCY .. " seconds to dweet.io as " .. THING)
+    -- dweets every FREQUENCY seconds.
+    if tmr.alarm(DWEET_TIMER_ID, FREQUENCY * 1000, tmr.ALARM_AUTO, function() callDweet() end ) then
+        print("Dweets every " .. FREQUENCY .. " seconds to dweet.io as " .. THING)
         print("Stop this by tmr.stop(1)")
     else
         print("Problem starting DWEET timer!")
