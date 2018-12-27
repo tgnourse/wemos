@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PORT="/dev/tty.wchusbserial14140"
+PORT="/dev/tty.wchusbserial142130"
 
 declare -a arr=(
     "i2c.lua"
