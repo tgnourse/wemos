@@ -13,7 +13,7 @@ A collection of applications for the Wemos D1 Mini running NodeMcu. Note that th
 ### Install the Tools
 Install esptool (flasher) & nodemcu-uploader (file upload, etc.), and `pip install wrapt`
 ```
-> ./install.sh 
+> ./install_tools.sh 
   Cloning into 'esptool'...
   ...
   Resolving deltas: 100% (1069/1069), done.
