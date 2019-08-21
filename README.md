@@ -2,7 +2,7 @@
 A collection of applications for the Wemos D1 Mini running NodeMcu. Note that this isn't super user friendly yet but it should be possible to get this running on your own.
 
 ## Applications
-* `current_applicatiion.lua` - Unifinished, attempting to read and report A/C current measurements.
+* `current_application.lua` - Unifinished, attempting to read and report A/C current measurements.
 * `lowpower_application.lua` - Low power temperature reporting. Nicer than normal temperature reporting because it doesn't require any insulation between the SHT20 and the Wemos board.
 * `on_application.lua` - Calls a specified endpoint at a regular interval. Pairs well with the `/on5` endpoint of the `relay_application.lua`.
 * `relay_application.lua` - Exposes a web server for control of a relay with endpoints like `/on`, `/off`, and `/on5`.
