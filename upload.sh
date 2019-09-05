@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-PORT="/dev/tty.wchusbserial142130"
+PORT="/dev/tty.SLAB_USBtoUART"
+# PORT="/dev/tty.usbserial-141320"
 
 declare -a arr=(
     "i2c.lua"
