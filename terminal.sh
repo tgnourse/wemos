@@ -2,4 +2,4 @@
 
 PORT="/dev/tty.wchusbserial142130"
 
-python nodemcu-uploader/nodemcu-uploader.py --port=${PORT} terminal
+python3 nodemcu-uploader/nodemcu-uploader.py --port=${PORT} terminal

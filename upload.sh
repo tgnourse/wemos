@@ -16,7 +16,7 @@ for i in "${arr[@]}"
 do
     echo "Uploading: $i"
     # or do whatever with individual element of the array
-    python nodemcu-uploader/nodemcu-uploader.py --port=${PORT} upload ${i}
+    python3 nodemcu-uploader/nodemcu-uploader.py --port=${PORT} upload ${i}
     ls -l ${i}
 done
-python nodemcu-uploader/nodemcu-uploader.py --port=${PORT} file list
+python3 nodemcu-uploader/nodemcu-uploader.py --port=${PORT} file list
